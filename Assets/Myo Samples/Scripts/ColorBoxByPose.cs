@@ -13,6 +13,7 @@ public class ColorBoxByPose : MonoBehaviour
     // Myo game object to connect with.
     // This object must have a ThalmicMyo script attached.
     public GameObject myo = null;
+	public GameObject playerCamera;
 
     // Materials to change to when poses are made.
     public Material waveInMaterial;
@@ -42,36 +43,67 @@ public class ColorBoxByPose : MonoBehaviour
             _lastPose = thalmicMyo.pose;
 
             // Vibrate the Myo armband when a fist is made.
-            if (thalmicMyo.pose == Pose.Fist) {
-                thalmicMyo.Vibrate (VibrationType.Medium);
+			if (thalmicMyo.pose == Pose.Fist) {
+				//thalmicMyo.Vibrate (VibrationType.Medium);
+				if (kittenObject.GetComponent<ThirdPersonController> ().nearMaster) {
+					Debug.Log ("start RPS");
+					kittenObject.GetComponent<rockPaperScissors> ().Play ();
+				}
 
-                ExtendUnlockAndNotifyUserAction (thalmicMyo);
+				//Player plays a hand
+				if (kittenObject.GetComponent<rockPaperScissors> ().playerRdy) {
+					Debug.Log ("player hand is rock");
+					kittenObject.GetComponent<rockPaperScissors> ().setPlayerHand ("rock");
+					kittenObject.GetComponent<rockPaperScissors> ().playerHand = true;
+				}
 
-            // Change material when wave in, wave out or double tap poses are made.
-            } else if (thalmicMyo.pose == Pose.WaveIn) {
-                GetComponent<Renderer>().material = waveInMaterial;
+				ExtendUnlockAndNotifyUserAction (thalmicMyo);
+
+				// Change material when wave in, wave out or double tap poses are made.
+			} else if (thalmicMyo.pose == Pose.WaveIn) {
+				GetComponent<Renderer> ().material = waveInMaterial;
 				//Move the cat towards the user
 				//1. get user position
 				//2. move kitten towards it
-				charPosition = transform.position;
+				charPosition = playerCamera.transform.position;
 				Vector3 kittenPosition = kittenObject.transform.position;
 				//Vector3 distance = kittenObject - charPosition;
-				kittenObject.GetComponent<ThirdPersonController>().toggleGesture(charPosition);
+				kittenObject.GetComponent<ThirdPersonController> ().toggleGesture (charPosition);
 				//kittenObject.GetComponent<ThirdPersonController>().moveTowardsUser();
 				Debug.Log ("Wave in");
 
-                ExtendUnlockAndNotifyUserAction (thalmicMyo);
-            } else if (thalmicMyo.pose == Pose.WaveOut) {
-                GetComponent<Renderer>().material = waveOutMaterial;
+				//Player plays a hand
+				if (kittenObject.GetComponent<rockPaperScissors> ().playerRdy) {
+					Debug.Log ("player hand is scissors");
+					kittenObject.GetComponent<rockPaperScissors> ().setPlayerHand ("scissors");
+					kittenObject.GetComponent<rockPaperScissors> ().playerHand = true;
+				}
 
-                ExtendUnlockAndNotifyUserAction (thalmicMyo);
-            } else if (thalmicMyo.pose == Pose.DoubleTap) {
-                GetComponent<Renderer>().material = doubleTapMaterial;
+				ExtendUnlockAndNotifyUserAction (thalmicMyo);
+			} else if (thalmicMyo.pose == Pose.WaveOut) {
+				GetComponent<Renderer> ().material = waveOutMaterial;
+
+				Debug.Log ("Wave Out");
+				kittenObject.GetComponent<ThirdPersonController> ().toggleWaveOutGesture ();
+				kittenObject.GetComponent<rockPaperScissors> ().DonePlaying ();
+
+				ExtendUnlockAndNotifyUserAction (thalmicMyo);
+			} else if (thalmicMyo.pose == Pose.DoubleTap) {
+				GetComponent<Renderer> ().material = doubleTapMaterial;
 
 				Debug.Log ("Double Tap");
+				kittenObject.GetComponent<ThirdPersonController> ().meowAnimation ();
 
-                ExtendUnlockAndNotifyUserAction (thalmicMyo);
-            }
+				ExtendUnlockAndNotifyUserAction (thalmicMyo);
+			} else if (thalmicMyo.pose == Pose.FingersSpread) {
+				Debug.Log ("finger spread");
+				//Player plays a hand
+				if (kittenObject.GetComponent<rockPaperScissors> ().playerRdy) {
+					Debug.Log ("player hand is paper");
+					kittenObject.GetComponent<rockPaperScissors> ().setPlayerHand ("paper");
+					kittenObject.GetComponent<rockPaperScissors> ().playerHand = true;
+				}
+			}
         }
     }
 

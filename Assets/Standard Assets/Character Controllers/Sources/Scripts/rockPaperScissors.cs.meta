@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: cd85a8e0f4c0a422186578bb29701c7c
+timeCreated: 1459013887
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - canvas: {fileID: 100008, guid: 80fb36d2bad747046a6f1e9af47b774d, type: 3}
+  - rock: {fileID: 1000011800991404, guid: 1d6a6ab86e2014a4caec9d79bb6d889a, type: 2}
+  - paper: {fileID: 1000011069162474, guid: 3e855362010114352bb439c327a3a5c8, type: 2}
+  - scissor: {fileID: 1000012426178084, guid: 4b67c9150550445a6934fdb7befa9002, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

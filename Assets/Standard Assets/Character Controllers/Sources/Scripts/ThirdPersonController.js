@@ -91,13 +91,23 @@ private var lastGroundedTime = 0.0;
 private var isControllable = true;
 
 private var gestured = false;
-private var nearMaster = false;
+public var nearMaster = false;
 private var masterPosition = Vector3.zero;
+
+//private var sounds : AudioSource[]; 
+public var audio1 : AudioSource; 
+public var audio2 : AudioSource; 
+public var audio3 : AudioSource; 
+
 
 function Awake ()
 {
 	moveDirection = transform.TransformDirection(Vector3.forward);
-	
+
+//	sounds = GetComponents(AudioSource);
+//	audio1 = sounds[0];
+//	audio2 = sounds[1];
+
 	_animation = GetComponent(Animation);
 	if(!_animation)
 		Debug.Log("The character you would like to control doesn't have animations. Moving her might look weird.");
@@ -124,28 +134,44 @@ public var jumpPoseAnimation : AnimationClip;
 		_animation = null;
 		Debug.Log("No jump animation found and the character has canJump enabled. Turning off animations.");
 	}
+
+
 			
 }
 
-function toggleGesture (charPosition: Vector3)
-{
-	gestured = true;
-	masterPosition = charPosition;
+function meowAnimation(){
+	//play animation
+	GetComponent.<Animation>().Play("Meow");
+	//play meow sound
+	audio2.Play();
 
 }
 
+//called when wave out gesture is made
+function toggleWaveOutGesture ()
+{
+	gestured = false; //make cat walk away
+	nearMaster = false;
+	audio3.Play();
+}
+
+//called when wave in gesture is made
+function toggleGesture (charPosition: Vector3)
+{
+	gestured = true;
+
+	masterPosition = charPosition;
+	audio1.Play();
+}
+
+//Stop the cat and put it in idle state
 function stopCat ()
 {
 	
 	var movementVector = Vector3(transform.position.x - masterPosition.x, transform.position.y, transform.position.z - masterPosition.z);
 	var distance = Mathf.Sqrt(Mathf.Pow(movementVector.x,2) + Mathf.Pow(movementVector.z,2));
 
-	if(movementVector.z < 1){
-		gestured = false;
-		nearMaster = true;
-	}
-
-	Debug.Log ("Move the Cat");
+	Debug.Log ("Stop the Cat");
 	var cameraTransform = transform;
 	var grounded = IsGrounded();
 	
@@ -231,10 +257,11 @@ function stopCat ()
 		// Reset walk time start when we slow down
 		if (moveSpeed < walkSpeed * 0.3)
 			walkTimeStart = Time.time;
-	
+
 
 }
 
+//Change direction to the user and walk towards the user
 function moveTowardsUser ()
 {
 	
@@ -302,14 +329,10 @@ function moveTowardsUser ()
 		var targetSpeed = Mathf.Min(movementVector.magnitude, 1.0);
 	
 		_characterState = CharacterState.Idle;
-		
-		// Pick speed modifier
-		if (Input.GetKey (KeyCode.LeftShift) || Input.GetKey (KeyCode.RightShift))
-		{
+
 			targetSpeed *= runSpeed;
 			_characterState = CharacterState.Running;
-		}
-		else if (Time.time - trotAfterSeconds > walkTimeStart)
+		if (Time.time - trotAfterSeconds > walkTimeStart)
 		{
 			targetSpeed *= trotSpeed;
 			_characterState = CharacterState.Trotting;
@@ -329,7 +352,7 @@ function moveTowardsUser ()
 
 }
 
-
+//Make animal circle within radius
 function UpdateSmoothedMovementDirection ()
 {
 	var cameraTransform = transform;
@@ -509,6 +532,8 @@ function Update() {
 		//stop the cat
 		Debug.Log("stop the cat!");
 		stopCat();
+
+
 	}else{
 		if(gestured){
 		//stop the cat when it reaches its master
