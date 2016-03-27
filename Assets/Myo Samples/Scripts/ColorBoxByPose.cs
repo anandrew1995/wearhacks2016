@@ -53,6 +53,7 @@ public class ColorBoxByPose : MonoBehaviour
 				//Player plays a hand
 				if (kittenObject.GetComponent<rockPaperScissors> ().playerRdy) {
 					Debug.Log ("player hand is rock");
+					//QQQQQQQQQ
 					kittenObject.GetComponent<rockPaperScissors> ().setPlayerHand ("rock");
 					kittenObject.GetComponent<rockPaperScissors> ().playerHand = true;
 				}
