@@ -41,7 +41,7 @@ public class rockPaperScissors : MonoBehaviour {
 		mainCanvas.transform.rotation = mainCamera.transform.rotation;
 		mainCanvas.transform.position = new Vector3 (mainCamera.transform.position.x, mainCamera.transform.position.y, mainCamera.transform.position.z);
 		if (playerHand) {
-			float computerHand = Random.Range(0f, 0.99f);
+			float computerHand = Random.Range(0f, 3f);
 
 			if (!hasCompPlayed && isPlaying) {
 				if (computerHand < 1f) {
